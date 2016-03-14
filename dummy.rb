@@ -7,7 +7,7 @@ end
 get '/ibank/loginPage.action' do
   <<-END
     <form name="logonForm" action="logonAction.action" method="POST">
-      <input type="text" name="userID"/>
+      <input type="text" name="userId"/>
       <input type="text" name="securityNumber"/>
       <input type="text" name="password"/>
       <input type="submit" value="Login"/>

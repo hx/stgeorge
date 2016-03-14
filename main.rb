@@ -61,7 +61,7 @@ class Reaper
       puts 'Logging in'
 
       home_page = login_page.form_with(name: 'logonForm') { |form|
-        form.userID         = username
+        form.userId         = username
         form.securityNumber = security_number
         form.password       = password
       }.submit
