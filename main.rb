@@ -3,6 +3,7 @@
 require 'mechanize'
 require 'active_support/all'
 require 'pathname'
+require 'io/console'
 
 class Reaper
 
@@ -12,15 +13,23 @@ class Reaper
     bankofmelbourne
   )
 
-  VARS = %w(username password security_number)
-
-  attr_reader :domain_index
+  attr_reader :domain_index, :username, :password, :security_number
 
   def initialize
-    @domain_index = 0
-    VARS.each do |var|
-      raise "Expected #{var.upcase} to be set" unless __send__(var)
+    unless ENV['TEST_PORT']
+      @username        = prompt('Username: ')
+      @security_number = prompt('Security number: ', true)
+      @password        = prompt('Password: ', true)
     end
+    @domain_index = 0
+  end
+
+  def prompt(str, silent = false)
+    print str
+    result = silent ? STDIN.noecho(&:gets) : STDIN.gets
+    result ||= ''
+    print "\n" if silent || !result.end_with?("\n")
+    result.strip
   end
 
   def root
@@ -30,8 +39,6 @@ class Reaper
       "https://ibanking.#{DOMAINS[domain_index]}.com.au"
     end
   end
-
-  VARS.each { |var| define_method(var) { ENV[var.upcase] } }
 
   def cycle_domain
     @domain_index += 1
